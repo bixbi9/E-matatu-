@@ -22,8 +22,22 @@ class InspectionController extends Controller
 
     public function store(Request $request)
     {
-        $inspection = Inspections::create($request->all());
-        return redirect()->route('inspections.index');
+        $request->validate([
+            'inspection_id' => 'required|integer',
+            'vehicle_id' => 'required|integer',
+            'inspector_name' => 'required|string|max:50',
+            'result' => 'required|string|max:20',
+            'comments' => 'nullable|string',
+            'rating' => 'nullable|string|max:50',
+            'status' => 'nullable|string|max:50',
+            'inspection_date' => 'required|date',
+            'evaluation_form' => 'nullable|string',
+            'maintenance_type' => 'nullable|string|max:50'
+        ]);
+
+        Inspections::create($request->all());
+
+        return redirect()->route('inspections.index')->with('success', 'Inspection created successfully.');
     }
 
     public function show(Inspections $inspection)

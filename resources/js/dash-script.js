@@ -72,3 +72,4 @@ var options = {
 var chart = new google.visualization.LineChart(document.getElementById('myChart2'));
 chart.draw(data, options);
 }
+

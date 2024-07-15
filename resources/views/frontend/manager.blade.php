@@ -68,12 +68,15 @@
                        </a>
                    </li>
        
-                   <li id="sign_out">
-                   <a href={{ asset('/index')}}>
-                           <i class='bx bx-log-out'></i>
-                       </a>
-                       <span class="links_name">Sign Out</span>
-                   </li>    
+                <button id="Logout"> <form method="POST" action="{{ route('logout') }}" x-data>
+                    @csrf
+
+                    <x-responsive-nav-link href="{{ route('logout') }}"
+                                   @click.prevent="$root.submit();">
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
+                </button> 
                </ul>
                </div>
            </section>

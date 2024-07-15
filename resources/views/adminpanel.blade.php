@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="{{ asset('js/dash-script.js') }}" defer></script>
     <link href="{{ asset('css/dash-style.css') }}" rel="stylesheet">
     <title>Admin panel</title>
 </head>
@@ -91,7 +94,7 @@
                 </form>
                 </button>
 
-               
+
                     </a>
                 </li>
             </ul>
@@ -167,7 +170,6 @@
                     <div id="container"></div>
                 </div>
                 <br>
-                <script src="{{ asset('js/dash-script.js') }}" defer></script>
                 <div>
                     <canvas id="myChart"></canvas>
                 </div>
@@ -252,9 +254,6 @@
             <a href="#">e-matatu-system</a></p>
             </div>
 
-        <script src="{{ asset('js/dash-script.js') }}"></script> 
-
 </body>
 
 </html>
-

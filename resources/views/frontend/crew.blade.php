@@ -1,3 +1,33 @@
+change this code to return
+<!-- PHP code to establish connection with the localserver -->
+<?php
+
+// Username is root
+$user = 'root';
+$password = '';
+
+// Database name is geeksforgeeks
+$database = 'IT_Project';
+
+// Server is localhost with
+// port number 3306
+$servername = 'localhost:3306';
+$mysqli = new mysqli($servername, $user,
+    $password, $database);
+
+// Checking for connections
+if ($mysqli->connect_error) {
+    die('Connect Error (' .
+        $mysqli->connect_errno . ') ' .
+        $mysqli->connect_error);
+}
+
+// SQL query to select data from database
+$sql = " SELECT * FROM drivers ORDER BY driver_id DESC ";
+$result = $mysqli->query($sql);
+$mysqli->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -85,12 +115,15 @@
                     </a>
                 </li>
 
-                <li id="sign_out">
-                <a href={{ asset('/index')}}>
-                        <i class='bx bx-log-out'></i>
-                    </a>
-                    <span class="links_name">Sign Out</span>
-                </li>
+                <button id="Logout"> <form method="POST" action="{{ route('logout') }}" x-data>
+                    @csrf
+
+                    <x-responsive-nav-link href="{{ route('logout') }}"
+                                   @click.prevent="$root.submit();">
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
+                </button>
             </ul>
         </div>
         <div class="main-content">
@@ -99,128 +132,90 @@
             <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."
                 title="Type in a name">
             <br>
-            <br>
-            <table id="myTable">
-                <tr class="header">
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Email</th>
-                    <th>Work</th>
-                    <th>Status</th>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>11</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>12</td>
-                    <td>Alfreds</td>
-                    <td>+2547123456</td>
-                    <td>johndoe@driver.matatu.com</td>
-                    <td>Driver</td>
-                    <td>Active</td>
-                </tr>
-            </table>
+            <table id = 'myTable'>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>License number</th>
+                <th>Phone number</th>
+                <th>Password</th>
+                <th>Status</th>'
+        '       <th>Comments</th>
+                <th>Role id</th>
+             </tr>
+        <tbody>
+          <!-- PHP CODE TO FETCH DATA FROM ROWS -->
+          <?php
+// LOOP TILL END OF DATA
+while ($rows = $result->fetch_assoc()) {
+    ?>
+            <tr>
+                <!-- FETCHING DATA FROM EACH
+                    ROW OF EVERY COLUMN -->
+                <td><?php echo $rows['first_name']; ?></td>
+                <td><?php echo $rows['last_name']; ?></td>
+                <td><?php echo $rows['license_number']; ?></td>
+                <td><?php echo $rows['phone_number']; ?></td>
+                <td><?php echo $rows['password']; ?></td>
+                <td><?php echo $rows['status']; ?></td>
+                <td><?php echo $rows['comments']; ?></td>
+                <td><?php echo $rows['role_id']; ?></td>
+            </tr>
+            </tbody>
+                <?php
+}
+?>
+                    <button class="btn-list" onclick="document.getElementById('NewMemberForm').style.display='block'"
+                    style="width:60%;">+ Add New Crew Member</button>
             <br>
             <br>
-            <button class="btn-list" onclick="document.getElementById('id01').style.display='block'"
-                style="width:auto;">+ Add New Crew Member</button>
-
-            <div id="id01" class="modal">
-
-                <form class="modal-content animate" action="./crew.html" method="post">
-                    <div class="imgcontainer">
-                        <span onclick="document.getElementById('id01').style.display='none'" class="close"
-                            title="Close Modal">&times;</span>
-                        <img src="./photos/user.jpg" alt="Avatar" class="avatar">
+        <div id="NewMemberForm" class="modal" >
+        <form action="{{ route('drivers.store') }}" method="POST">
+            @csrf
+            <div class="container" style="background-color:#f1f1f1">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" required>
+            </div>
+            <div class="form-group">
+                <label for="license_number">License Number:</label>
+                <input type="number" class="form-control" id="license_number" name="license_number" required>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="text" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <input type="text" class="form-control" id="status" name="status" required>
+            </div>
+            <div class="form-group">
+                <label for="comments">Comments:</label>
+                <input type="text" class="form-control" id="comments" name="comments">
+            </div>
+            <div class="form-group">
+                <label for="role_id">Role ID:</label>
+                <input type="number" class="form-control" id="role_id" name="role_id" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+            <div class="container" style="background-color:#f1f1f1">
+             <button type="button" onclick="document.getElementById('NewMemberForm').style.display='none'"
+                            class="cancelbtn">Cancel</button>
                     </div>
+        </form>
+        </div>
 
-                    <div class="container">
+
+
+                    <!-- <div class="container">
                         <label for="uname"><b>Full Name</b></label>
                         <input type="text" placeholder="Enter full name" name="uname" id="uname" required>
                         <label for="idnum"><b>I.D No.</b></label>
@@ -234,7 +229,6 @@
 
                         <label for="dob"><b>D.O.B</b></label>
                         <input type="date" placeholder="Enter Date of Birth" name="dob" required>
-
                         <p><b>Please select Gender:</b></p> <br>
                         <input type="radio" id="html" name="fav_language" value="HTML">
                         <label for="html">Male</label><br>
@@ -251,15 +245,13 @@
                             class="cancelbtn">Cancel</button>
                     </div>
                 </form>
-            </div>
+            </div> -->
 
             <br>
             <br>
             <h1>New users</h1>
         </div>
     </div>
-
-
     <script src="./js/index.js"></script>
     <script>
         function myFunction() {
