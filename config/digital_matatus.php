@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'source_url' => 'https://digitalmatatus.com/map.html',
+    'source_pdf_url' => 'https://digitalmatatus.com/pdf/Matatus-24x36.pdf',
+    'source_label' => 'Digital Matatus wall map (May 30, 2019)',
+    'routes' => [
+        ['code' => '46K/Y', 'destination' => 'Kawangware / Yaya'],
+        ['code' => '46P', 'destination' => 'Kawangware (Loop)'],
+        ['code' => '19C', 'destination' => 'Komarocks'],
+        ['code' => '34B', 'destination' => 'Jacaranda'],
+        ['code' => '1960', 'destination' => 'Kayole'],
+        ['code' => '12C', 'destination' => 'South C'],
+        ['code' => '12D', 'destination' => 'KPA'],
+        ['code' => '33B/FED', 'destination' => 'Fedha Estate'],
+        ['code' => '24', 'destination' => 'Karen'],
+        ['code' => '24C', 'destination' => 'Hardy'],
+        ['code' => '32A', 'destination' => 'Ayani'],
+        ['code' => '33NG', 'destination' => 'Ngumo'],
+        ['code' => '111', 'destination' => 'Ngong'],
+        ['code' => '4W', 'destination' => 'Kaberia'],
+        ['code' => '2', 'destination' => 'Dagoretti'],
+        ['code' => '102', 'destination' => 'Kikuyu'],
+        ['code' => '25A', 'destination' => 'Lucky Summer'],
+        ['code' => '43', 'destination' => 'Ngumba'],
+        ['code' => '44G/Z', 'destination' => 'KU'],
+        ['code' => '145', 'destination' => 'Ruiru Town'],
+        ['code' => '45G', 'destination' => 'Githurai'],
+        ['code' => '49', 'destination' => 'Sunton'],
+    ],
+];

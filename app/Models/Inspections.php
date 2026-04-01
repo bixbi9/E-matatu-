@@ -2,27 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Inspections extends Model
 {
-    use HasFactory;
-    protected $table = 'Inspections';
+    protected $connection = 'supabase';
+
+    protected $table = 'inspections';
     protected $primaryKey = 'inspection_id';
+    public $timestamps = false;
+
     protected $fillable = [
-
-    'vehicle_id',
-    'inspector name',
-    'result',
-    'comments',
-    'rating' ,
-    'status',
-    'inspection date',
-    'evaluation form',
-    'maintenance type'
-     
+        'vehicle_id',
+        'inspector_name',
+        'result',
+        'comments',
+        'rating',
+        'status',
+        'inspection_date',
+        'evaluation_form',
+        'maintenance_type',
     ];
-
-
 }

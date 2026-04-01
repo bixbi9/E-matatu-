@@ -9,8 +9,7 @@ class ManagerController extends Controller
 {
     public function index()
     {
-        $managers = Manager::all();
-        return view('managers.index', compact('managers'));
+        return redirect()->route('matatus');
     }
 
     public function create()
@@ -46,4 +45,3 @@ class ManagerController extends Controller
         return redirect()->route('managers.index');
     }
 }
-

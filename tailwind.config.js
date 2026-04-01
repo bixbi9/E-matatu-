@@ -12,7 +12,25 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Montserrat', 'Figtree', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                teal: {
+                    50:  '#e6f3f3',
+                    100: '#b3d9d9',
+                    200: '#80bfbf',
+                    300: '#4da6a6',
+                    400: '#1a8c8c',
+                    500: '#008080',
+                    600: '#007373',
+                    700: '#006666',
+                    800: '#005959',
+                    900: '#003333',
+                },
+                gold: {
+                    400: '#FFD700',
+                    500: '#F5C900',
+                },
             },
         },
     },

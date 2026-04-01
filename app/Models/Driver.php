@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Driver extends Model
 {
+    protected $connection = 'supabase';
+
     protected $table = 'drivers';
 
     protected $fillable = [

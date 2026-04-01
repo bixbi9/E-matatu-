@@ -1,259 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('dashboard.layout')
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="{{ asset('js/dash-script.js') }}" defer></script>
-    <link href="{{ asset('css/dash-style.css') }}" rel="stylesheet">
-    <title>Admin panel</title>
-</head>
+@section('pageKicker', 'Operations')
+@section('pageTitle', 'Dashboard')
+@section('pageSubtitle', 'Monitor the fleet, confirm crew activity, and keep matatu assignments tied to real Nairobi routes from the Digital Matatus map.')
 
-<body>
-    <!--Top Navbar-->
+@section('content')
+    <section class="metric-grid">
+        <article class="card">
+            <h3>Total Matatus</h3>
+            <div class="metric-value">{{ $totalVehicles }}</div>
+            <div class="metric-meta">{{ $activeVehicles }} active and ready for route duty.</div>
+        </article>
 
-    <nav class="top-navbar">
-        <div>
-            <h1><span id="mat">e</span>-Matatu System</h1>
-        </div>
+        <article class="card">
+            <h3>Crew Members</h3>
+            <div class="metric-value">{{ $totalDrivers }}</div>
+            <div class="metric-meta">{{ $activeDrivers }} active drivers and conductors in the system.</div>
+        </article>
 
-        <div id="rightpanel">
-            <span class="dot"></span>
-            <span class="dot2"></span>
-            <span class="dot3"></span>
-        </div>
-    </nav>
+        <article class="card">
+            <h3>Pending Maintenance</h3>
+            <div class="metric-value">{{ $pendingMaint }}</div>
+            <div class="metric-meta">Units still marked as in progress.</div>
+        </article>
 
-    <!--Left fixed navbar-->
+        <article class="card">
+            <h3>Insurance Closing Soon</h3>
+            <div class="metric-value">{{ $expiringInsurance }}</div>
+            <div class="metric-meta">Policies expiring within the next 30 days.</div>
+        </article>
+    </section>
 
-    <div class="main-dashboard">
-
-
-        <div class="sidebar">
-            <section class="system">
-                <div class="logo">
-                    <h1><span id="mat">e</span>-Matatu system</h1>
-                </div>
-            </section>
-
-            <ul class="nav_bar">
-                <li>
-                    <a href={{ asset('/profile')}}>
-                        <i class='bx bxs-user'></i>
-                        <span class="links_name">My Profile</span>
-                    </a>
-                    <span class="tool">My Profile</span>
-                <li>
-                    <a href="#">
-                        <i class='bx bxs-dashboard'></i>
-                        <span class="links_name">Dashboard</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href={{ asset('/crew')}}>
-                        <i class='bx bx-money-withdraw'></i>
-                        <span class="links_name">Crew</span>
-                    </a>
-                    <span class="tool">Crew</span>
-                </li>
-
-                <li>
-                    <a href="{{ asset('/manager')}}">
-                        <i class='bx bx-detail'></i>
-                        <span class="links_name">Matatu Details</span>
-                    </a>
-                    <span class="tool">Matatus</span>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <i class='bx bxs-report'></i>
-                        <span class="links_name">Reports</span>
-                    </a>
-                    <span class="tool">Reports</span>
-                </li>
-                <li id="john_doe">
-                    <a href={{ asset('/profile')}}>
-                        <i class='bx bxs-user'></i>
-                        <span class="links_name">John Doe</span>
-                    </a>
-                </li>
-
-                <button id="Logout"> <form method="POST" action="{{ route('logout') }}" x-data>
-                    @csrf
-
-                    <x-responsive-nav-link href="{{ route('logout') }}"
-                                   @click.prevent="$root.submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-                </button>
-
-
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-
-
-        <!--Body content-->
-
-        <div class="main-content">
-            <h1>DASHBOARD</h1>
-            <br>
-            <div class="card-section">
-                <div class="card-container one">
-                    <h3>Number of trips</h3>
-                    <div class="content-in">
-                        <div>
-                            <h4><a href="#">350+</a></h4>
-                        </div>
-                        <div>
-                            <i class="fa-solid fa-circle-user"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-container two">
-                    <h3>Matatus</h3>
-                    <div class="content-in">
-                        <div>
-                            <h4><a href="#">180</a></h4>
-                        </div>
-                        <div>
-                            <i class="fa-solid fa-bus"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-container three">
-                    <h3>Crew members</h3>
-                    <div class="content-in">
-                        <div>
-                            <h4><a href="#">300</a></h4>
-                        </div>
-                        <div>
-                            <i class="fa-solid fa-circle-user"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-container four">
-                    <h3>Total Revenues</h3>
-                    <div class="content-in">
-                        <div>
-                            <h4><a href="#">200+</a></h4>
-                        </div>
-                        <div>
-                            <i class="fa-solid fa-coins"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <br>
-
-            <br>
-            <br>
-            <hr id="line">
-
-            <h1>Analytics</h1>
-            <br>
-            <br>
-            <div class="trips-section">
+    <section class="content-grid">
+        <article class="table-card">
+            <div class="table-card-header">
                 <div>
-                    <div id="container"></div>
+                    <h3>Recent Inspections</h3>
+                    <p>Latest inspection outcomes from the fleet records.</p>
                 </div>
-                <br>
-                <div>
-                    <canvas id="myChart"></canvas>
-                </div>
-
-                <div id="myChart2"></div>
+                <a class="action-link" href="{{ route('inspection') }}">All inspections</a>
             </div>
-            <div class="more">
-                <button class="btn-more"><a href="#">View more...</a></button>
-            </div>
-            <hr id="line">
 
-            <!--staff list-->
-            <div class="list">
-                <h1><a href={{ asset('/crew')}}>Staff List</a></h1>
-                <br>
-                <div class="smp-list">
-                    <table id="myTable">
-                        <tr class="header">
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Contact</th>
-                            <th>Email</th>
-                            <th>Work</th>
-                            <th>Status</th>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Alfreds</td>
-                            <td>+2547123456</td>
-                            <td>johndoe@driver.matatu.com</td>
-                            <td>Driver</td>
-                            <td>Active</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Alfreds</td>
-                            <td>+2547123456</td>
-                            <td>johndoe@driver.matatu.com</td>
-                            <td>Driver</td>
-                            <td>Active</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Alfreds</td>
-                            <td>+2547123456</td>
-                            <td>johndoe@driver.matatu.com</td>
-                            <td>Driver</td>
-                            <td>Active</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Alfreds</td>
-                            <td>+2547123456</td>
-                            <td>johndoe@driver.matatu.com</td>
-                            <td>Driver</td>
-                            <td>Active</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Alfreds</td>
-                            <td>+2547123456</td>
-                            <td>johndoe@driver.matatu.com</td>
-                            <td>Driver</td>
-                            <td>Active</td>
-                        </tr>
-
+            @if ($recentInspections->isEmpty())
+                <div class="empty-state">No inspections have been recorded yet.</div>
+            @else
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Inspector</th>
+                                <th>Result</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($recentInspections as $inspection)
+                                <tr>
+                                    <td>{{ $inspection->vehicle_id }}</td>
+                                    <td>{{ $inspection->inspector_name }}</td>
+                                    <td>
+                                        <span class="chip {{ $inspection->result === 'Pass' ? 'success' : 'danger' }}">
+                                            {{ $inspection->result }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $inspection->inspection_date }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
+            @endif
+        </article>
 
-                <div class="more">
-                    <button class="btn-more"><a href="#">View more...</a></button>
+        <article class="highlight-card">
+            <h3>Route Source</h3>
+            <p class="page-subtitle">Matatu assignments now use real route labels from the public Digital Matatus Nairobi map instead of placeholder names.</p>
+
+            <div class="list-stack">
+                @foreach ($routeCatalog->take(4) as $route)
+                    <div class="list-item">
+                        <div>
+                            <strong>{{ $route['route_label'] }}</strong>
+                            <div class="muted">{{ config('digital_matatus.source_label') }}</div>
+                        </div>
+                        <span class="chip neutral">Real route</span>
+                    </div>
+                @endforeach
+            </div>
+        </article>
+    </section>
+
+    <section class="summary-grid" style="margin-top: 24px;">
+        <article class="table-card">
+            <div class="table-card-header">
+                <div>
+                    <h3>Matatu Route Assignments</h3>
+                    <p>Vehicles matched to real route names from the Digital Matatus reference map.</p>
                 </div>
-<br>
-
+                <a class="action-link" href="{{ route('matatus') }}">Open matatus page</a>
             </div>
 
+            @if ($assignedVehicles->isEmpty())
+                <div class="empty-state">Add vehicles to start assigning them to the Nairobi route catalogue.</div>
+            @else
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Matatu</th>
+                                <th>Plate</th>
+                                <th>Assigned Route</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($assignedVehicles->take(6) as $assignment)
+                                <tr>
+                                    <td>{{ $assignment['vehicle_name'] }}</td>
+                                    <td>{{ $assignment['license_plate'] }}</td>
+                                    <td>{{ $assignment['route_label'] }}</td>
+                                    <td>
+                                        <span class="chip {{ $assignment['status_tone'] }}">
+                                            {{ $assignment['status'] }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </article>
 
-        </div>
-        </div>
-        <div class="footer">
-            <p>Author: Shiloh Asiimwe and Allan Kiarie<br>
-            <a href="#">e-matatu-system</a></p>
+        <article class="table-card">
+            <div class="table-card-header">
+                <div>
+                    <h3>Crew Snapshot</h3>
+                    <p>The latest crew records linked from the dashboard menu.</p>
+                </div>
+                <a class="action-link" href="{{ route('crew') }}">Open crew page</a>
             </div>
 
-</body>
-
-</html>
+            @if ($recentDrivers->isEmpty())
+                <div class="empty-state">No crew members have been added yet.</div>
+            @else
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($recentDrivers as $driver)
+                                <tr>
+                                    <td>{{ trim($driver->first_name . ' ' . $driver->last_name) ?: 'Crew Member ' . $driver->driver_id }}</td>
+                                    <td>{{ $driver->phone_number ?: 'Not set' }}</td>
+                                    <td>
+                                        <span class="chip {{ strtolower($driver->status) === 'active' ? 'success' : 'warning' }}">
+                                            {{ $driver->status ?: 'Unknown' }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </article>
+    </section>
+@endsection

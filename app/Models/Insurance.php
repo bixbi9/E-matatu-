@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Insurance extends Model
 {
+    protected $connection = 'supabase';
+
     protected $table = 'insurance';
 
     protected $fillable = [

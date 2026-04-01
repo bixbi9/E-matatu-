@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Inspection;
 use App\Models\Inspections;
 use Illuminate\Http\Request;
 
 class InspectionController extends Controller
 {
-    
     public function index()
     {
-        $inspections = Inspections::all();
-        return view('inspections.index', compact('inspections'));
+        return redirect()->route('inspection');
     }
 
     public function create()
@@ -23,16 +20,15 @@ class InspectionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'inspection_id' => 'required|integer',
-            'vehicle_id' => 'required|integer',
-            'inspector_name' => 'required|string|max:50',
-            'result' => 'required|string|max:20',
-            'comments' => 'nullable|string',
-            'rating' => 'nullable|string|max:50',
-            'status' => 'nullable|string|max:50',
-            'inspection_date' => 'required|date',
-            'evaluation_form' => 'nullable|string',
-            'maintenance_type' => 'nullable|string|max:50'
+            'vehicle_id'       => 'required|integer',
+            'inspector_name'   => 'required|string|max:50',
+            'result'           => 'required|string|max:20',
+            'comments'         => 'nullable|string',
+            'rating'           => 'nullable|string|max:50',
+            'status'           => 'nullable|string|max:50',
+            'inspection_date'  => 'required|date',
+            'evaluation_form'  => 'nullable|string',
+            'maintenance_type' => 'nullable|string|max:50',
         ]);
 
         Inspections::create($request->all());
@@ -62,4 +58,3 @@ class InspectionController extends Controller
         return redirect()->route('inspections.index');
     }
 }
-

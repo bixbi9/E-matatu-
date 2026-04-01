@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Services\Supabase\SupabaseAuthService;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use RuntimeException;
 
 class LoginRequest extends FormRequest
 {
@@ -47,6 +50,39 @@ class LoginRequest extends FormRequest
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
+        }
+
+        $supabase = app(SupabaseAuthService::class);
+
+        if ($supabase->hasSessionConfiguration()) {
+            try {
+                $session = $supabase->signInWithPassword(
+                    $this->string('email')->toString(),
+                    $this->string('password')->toString(),
+                );
+            } catch (RuntimeException $e) {
+                Auth::logout();
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'email' => $e->getMessage(),
+                ]);
+            }
+
+            $this->session()->put('supabase_auth', Arr::only($session, [
+                'access_token',
+                'refresh_token',
+                'expires_in',
+                'token_type',
+                'user',
+            ]));
+
+            if (Auth::user() && empty(Auth::user()->supabase_user_id) && isset($session['user']['id'])) {
+                Auth::user()->forceFill([
+                    'supabase_user_id' => $session['user']['id'],
+                    'supabase_synced_at' => now(),
+                ])->save();
+            }
         }
 
         RateLimiter::clear($this->throttleKey());

@@ -9,8 +9,7 @@ class MaintenanceController extends Controller
 {
     public function index()
     {
-        $maintenances = Maintenance::all();
-        return view('maintenances.index', compact('maintenances'));
+        return redirect()->route('maintenance');
     }
 
     public function create()
@@ -46,4 +45,3 @@ class MaintenanceController extends Controller
         return redirect()->route('maintenances.index');
     }
 }
-

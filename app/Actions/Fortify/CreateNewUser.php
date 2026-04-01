@@ -3,10 +3,11 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Services\Auth\UserRegistrationService;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
+use RuntimeException;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -26,10 +27,12 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        return User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
-        ]);
+        try {
+            return app(UserRegistrationService::class)->register($input);
+        } catch (RuntimeException $e) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => $e->getMessage(),
+            ]);
+        }
     }
 }

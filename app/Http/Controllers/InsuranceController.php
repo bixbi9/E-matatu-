@@ -9,8 +9,7 @@ class InsuranceController extends Controller
 {
     public function index()
     {
-        $insurances = Insurance::all();
-        return view('insurances.index', compact('insurances'));
+        return redirect()->route('insurance');
     }
 
     public function create()

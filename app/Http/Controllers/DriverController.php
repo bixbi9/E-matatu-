@@ -10,8 +10,7 @@ class DriverController extends Controller
 {
     public function index()
     {
-        $drivers = Driver::all();
-        return view('drivers.index', compact('drivers'));
+        return redirect()->route('crew');
     }
 
     public function create()

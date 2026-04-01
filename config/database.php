@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Str;
 
+$supabaseProjectHost = parse_url((string) env('SUPABASE_URL', ''), PHP_URL_HOST);
+$supabaseProjectRef = $supabaseProjectHost ? Str::before($supabaseProjectHost, '.') : null;
+$derivedSupabaseDbHost = $supabaseProjectRef ? 'db.'.$supabaseProjectRef.'.supabase.co' : '127.0.0.1';
+
 return [
 
     /*
@@ -92,6 +96,21 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',
+        ],
+
+        'supabase' => [
+            'driver' => 'pgsql',
+            'url' => env('SUPABASE_DB_URL'),
+            'host' => env('SUPABASE_DB_HOST') ?: $derivedSupabaseDbHost,
+            'port' => env('SUPABASE_DB_PORT', '5432'),
+            'database' => env('SUPABASE_DB_DATABASE', 'postgres'),
+            'username' => env('SUPABASE_DB_USERNAME', 'postgres'),
+            'password' => env('SUPABASE_DB_PASSWORD', ''),
+            'charset' => env('SUPABASE_DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => env('SUPABASE_DB_SCHEMA', 'public'),
+            'sslmode' => env('SUPABASE_DB_SSLMODE', 'require'),
         ],
 
         'sqlsrv' => [

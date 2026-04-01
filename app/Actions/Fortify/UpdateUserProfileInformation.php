@@ -3,10 +3,13 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Services\Supabase\SupabaseAuthService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
+use RuntimeException;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
@@ -35,6 +38,26 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'name' => $input['name'],
                 'email' => $input['email'],
             ])->save();
+        }
+
+        $supabase = app(SupabaseAuthService::class);
+
+        if ($supabase->hasAdminConfiguration() && ! empty($user->supabase_user_id)) {
+            try {
+                $supabase->updateUser($user->supabase_user_id, [
+                    'email' => $input['email'],
+                    'email_confirm' => true,
+                    'user_metadata' => [
+                        'name' => $input['name'],
+                        'user_uid' => $user->user_uid,
+                        'local_user_id' => $user->id,
+                    ],
+                ]);
+            } catch (RuntimeException $e) {
+                throw ValidationException::withMessages([
+                    'email' => $e->getMessage(),
+                ]);
+            }
         }
     }
 

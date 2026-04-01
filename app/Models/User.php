@@ -26,7 +26,11 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'user-id',
+        'user_uid',
         'password',
+        'supabase_user_id',
+        'supabase_synced_at',
     ];
 
     /**
@@ -60,6 +64,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'supabase_synced_at' => 'datetime',
         ];
     }
 }

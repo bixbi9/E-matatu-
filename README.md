@@ -64,3 +64,14 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Supabase Setup
+
+This project now supports syncing Laravel auth with Supabase Auth and running the Laravel migrations against a Supabase Postgres database.
+
+1. Fill in the `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` values in `.env`.
+2. Fill in either `SUPABASE_DB_URL` or the `SUPABASE_DB_HOST`, `SUPABASE_DB_PORT`, `SUPABASE_DB_DATABASE`, `SUPABASE_DB_USERNAME`, and `SUPABASE_DB_PASSWORD` values.
+3. Run `php artisan migrate` for the local database as usual.
+4. Run `php artisan supabase:migrate` to apply the same Laravel migrations to Supabase Postgres.
+
+When the Supabase auth variables are configured, new registrations are created in both Laravel and Supabase Auth, and successful logins store the Supabase session tokens in the Laravel session. Profile email changes and password updates also sync back to Supabase for users that already have a `supabase_user_id`.
