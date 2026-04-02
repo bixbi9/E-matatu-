@@ -24,8 +24,8 @@ if (($storagePath = env('VERCEL_STORAGE_PATH')) && is_dir($storagePath)) {
     $app->useStoragePath($storagePath);
 }
 
-if (($cachePath = env('VERCEL_BOOTSTRAP_CACHE')) && is_dir($cachePath)) {
-    $app->useBootstrapPath($cachePath);
+if (($bootstrapPath = env('VERCEL_BOOTSTRAP_PATH')) && is_dir($bootstrapPath)) {
+    $app->useBootstrapPath($bootstrapPath);
 }
 
 return $app;

@@ -23,10 +23,11 @@ foreach ($writableDirs as $dir) {
 }
 
 // Tell bootstrap/app.php where to find writable storage.
+// Note: useBootstrapPath() takes the parent bootstrap/ dir; Laravel appends /cache itself.
 putenv("VERCEL_STORAGE_PATH={$tmpBase}/storage");
-putenv("VERCEL_BOOTSTRAP_CACHE={$tmpBase}/bootstrap/cache");
-$_ENV['VERCEL_STORAGE_PATH']    = "{$tmpBase}/storage";
-$_ENV['VERCEL_BOOTSTRAP_CACHE'] = "{$tmpBase}/bootstrap/cache";
+putenv("VERCEL_BOOTSTRAP_PATH={$tmpBase}/bootstrap");
+$_ENV['VERCEL_STORAGE_PATH']   = "{$tmpBase}/storage";
+$_ENV['VERCEL_BOOTSTRAP_PATH'] = "{$tmpBase}/bootstrap";
 
 // Fix document root so asset URL helpers resolve correctly.
 $_SERVER['DOCUMENT_ROOT'] = $publicDir;
