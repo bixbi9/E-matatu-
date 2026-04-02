@@ -3,22 +3,35 @@
 $root = dirname(__DIR__);
 $publicDir = $root . '/public';
 
-// Fix document root
-$_SERVER['DOCUMENT_ROOT'] = $publicDir;
+// On Vercel the root filesystem is read-only; only /tmp is writable.
+// Create all directories Laravel needs before the framework boots.
+$tmpBase = '/tmp/laravel';
 
-// On Vercel the filesystem is read-only except /tmp — redirect writable paths
-if (!is_writable($root . '/storage')) {
-    $tmpStorage = '/tmp/storage';
-    foreach (['app/public', 'framework/cache/data', 'framework/sessions', 'framework/views', 'logs'] as $dir) {
-        @mkdir($tmpStorage . '/' . $dir, 0775, true);
+$writableDirs = [
+    "{$tmpBase}/storage/app/public",
+    "{$tmpBase}/storage/framework/cache/data",
+    "{$tmpBase}/storage/framework/sessions",
+    "{$tmpBase}/storage/framework/views",
+    "{$tmpBase}/storage/logs",
+    "{$tmpBase}/bootstrap/cache",
+];
+
+foreach ($writableDirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
     }
-    // Override storage path via env so Laravel picks it up
-    putenv("STORAGE_PATH={$tmpStorage}");
-    $_ENV['STORAGE_PATH'] = $tmpStorage;
-    $_SERVER['STORAGE_PATH'] = $tmpStorage;
 }
 
-// Serve static files that slipped past Vercel routes
+// Tell bootstrap/app.php where to find writable storage.
+putenv("VERCEL_STORAGE_PATH={$tmpBase}/storage");
+putenv("VERCEL_BOOTSTRAP_CACHE={$tmpBase}/bootstrap/cache");
+$_ENV['VERCEL_STORAGE_PATH']    = "{$tmpBase}/storage";
+$_ENV['VERCEL_BOOTSTRAP_CACHE'] = "{$tmpBase}/bootstrap/cache";
+
+// Fix document root so asset URL helpers resolve correctly.
+$_SERVER['DOCUMENT_ROOT'] = $publicDir;
+
+// Pass through static files that slipped past Vercel routes.
 $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $staticFile = $publicDir . $requestUri;
 
