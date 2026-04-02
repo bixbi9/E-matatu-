@@ -22,6 +22,7 @@
             ['label' => 'Matatus', 'route' => 'matatus', 'icon' => 'bx bxs-bus'],
             ['label' => 'Crew', 'route' => 'crew', 'icon' => 'bx bxs-group'],
             ['label' => 'Inspections', 'route' => 'inspection', 'icon' => 'bx bxs-report'],
+            ['label' => 'Routes', 'route' => 'routes', 'icon' => 'bx bxs-map'],
             ['label' => 'Maintenance', 'route' => 'maintenance', 'icon' => 'bx bxs-wrench'],
             ['label' => 'Insurance', 'route' => 'insurance', 'icon' => 'bx bxs-shield'],
         ];

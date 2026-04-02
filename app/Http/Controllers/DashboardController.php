@@ -16,6 +16,8 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
+    private ?array $fleetConnectionState = null;
+
     public function index(): View
     {
         return view('adminpanel', $this->overviewData());
@@ -140,6 +142,36 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function routeMap(): View
+    {
+        $routes    = $this->routeRecords();
+        $drivers   = $this->drivers();
+        $vehicles  = $this->vehicles();
+
+        // Build a keyed map of route_code → route array for the Blade template
+        $routeMap = $routes->keyBy('route_code')->toArray();
+
+        // Flat arrays for JS
+        $routesForJs = $routes->values()->toArray();
+
+        $driversForJs = $drivers->map(fn ($d) => [
+            'driver_id'  => $d->driver_id,
+            'first_name' => $d->first_name,
+            'last_name'  => $d->last_name,
+            'status'     => $d->status,
+        ])->values()->toArray();
+
+        return view('dashboard.routes', [
+            ...$this->fleetConnectionViewData(),
+            'routes'      => $routes,
+            'routeMap'    => $routeMap,
+            'routesForJs' => $routesForJs,
+            'driversForJs'=> $driversForJs,
+            'drivers'     => $drivers,
+            'vehicles'    => $vehicles,
+        ]);
+    }
+
     public function insurance(): View
     {
         return view('dashboard.insurance', [
@@ -174,6 +206,23 @@ class DashboardController extends Controller
         $inspections = $this->inspectionsCollection();
         $maintenances = $this->maintenances();
 
+        // Build per-route assignment data for the animated dashboard chart
+        $routeChartData = $routes->map(function ($route) use ($drivers) {
+            $driver = $route['driver_id']
+                ? $drivers->firstWhere('driver_id', $route['driver_id'])
+                : null;
+
+            return [
+                'code'        => $route['route_code'],
+                'name'        => $route['route_name'],
+                'label'       => $route['route_label'],
+                'assigned'    => ! empty($route['driver_id']),
+                'driver_name' => $driver
+                    ? trim($driver->first_name . ' ' . $driver->last_name)
+                    : null,
+            ];
+        })->values();
+
         return [
             ...$this->fleetConnectionViewData(),
             'totalVehicles' => $vehicles->count(),
@@ -186,24 +235,18 @@ class DashboardController extends Controller
             'recentDrivers' => $drivers->take(8)->values(),
             'assignedVehicles' => $this->assignedVehicles($vehicles, $drivers, $routes)->take(8)->values(),
             'routeCatalog' => $routes,
+            'routeChartData' => $routeChartData,
         ];
     }
 
     private function fleetConnectionViewData(): array
     {
-        try {
-            Vehicle::query()->limit(1)->get();
+        $state = $this->fleetConnectionState();
 
-            return [
-                'fleetConnectionOk' => true,
-                'fleetConnectionMessage' => 'Live fleet records are loading from Supabase.',
-            ];
-        } catch (\Throwable) {
-            return [
-                'fleetConnectionOk' => false,
-                'fleetConnectionMessage' => 'Fleet data is not loading from Supabase. Check the Supabase DB host, SSL settings, and cached Laravel config.',
-            ];
-        }
+        return [
+            'fleetConnectionOk' => $state['ok'],
+            'fleetConnectionMessage' => $state['message'],
+        ];
     }
 
     private function vehicles(): Collection
@@ -437,19 +480,74 @@ class DashboardController extends Controller
 
     private function tableExists(string $table): bool
     {
+        if (! $this->fleetConnectionState()['ok']) {
+            return false;
+        }
+
         try {
             return Schema::connection('supabase')->hasTable($table);
-        } catch (\Throwable) {
+        } catch (\Throwable $exception) {
+            $this->fleetConnectionState = [
+                'ok' => false,
+                'message' => $this->fleetConnectionErrorMessage($exception),
+            ];
+
             return false;
         }
     }
 
     private function hasColumn(string $table, string $column): bool
     {
-        try {
-            return Schema::connection('supabase')->hasColumn($table, $column);
-        } catch (\Throwable) {
+        if (! $this->fleetConnectionState()['ok']) {
             return false;
         }
+
+        try {
+            return Schema::connection('supabase')->hasColumn($table, $column);
+        } catch (\Throwable $exception) {
+            $this->fleetConnectionState = [
+                'ok' => false,
+                'message' => $this->fleetConnectionErrorMessage($exception),
+            ];
+
+            return false;
+        }
+    }
+
+    private function fleetConnectionState(): array
+    {
+        if ($this->fleetConnectionState !== null) {
+            return $this->fleetConnectionState;
+        }
+
+        try {
+            Vehicle::query()->limit(1)->get();
+
+            return $this->fleetConnectionState = [
+                'ok' => true,
+                'message' => 'Live fleet records are loading from Supabase.',
+            ];
+        } catch (\Throwable $exception) {
+            return $this->fleetConnectionState = [
+                'ok' => false,
+                'message' => $this->fleetConnectionErrorMessage($exception),
+            ];
+        }
+    }
+
+    private function fleetConnectionErrorMessage(\Throwable $exception): string
+    {
+        $message = strtolower($exception->getMessage());
+        $host = (string) config('database.connections.supabase.host');
+
+        if (str_contains($message, 'could not translate host name') || str_contains($message, 'unknown host')) {
+            return "Fleet data is not loading from Supabase because Laravel cannot resolve {$host}. Supabase direct database hosts use IPv6 by default, so switch SUPABASE_DB_URL to the Supavisor session pooler string from Supabase > Connect if this machine is on an IPv4-only network.";
+        }
+
+        if (str_contains($message, 'connection refused') || str_contains($message, 'timeout')) {
+            return "Fleet data is not loading from Supabase because the database connection to {$host} is being refused or timing out. Check the host, port, SSL mode, and any Supabase network restrictions before retrying.";
+        }
+
+        return 'Fleet data is not loading from Supabase. Check the Supabase DB host, credentials, SSL settings, and cached Laravel config.';
     }
 }

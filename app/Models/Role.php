@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
+    protected $connection = 'supabase';
+
     protected $table = 'role';
 
     protected $fillable = [

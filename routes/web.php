@@ -15,6 +15,9 @@ use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return view('welcome');
 });
 
@@ -53,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/manager',     [DashboardController::class, 'matatus'])->name('manager');
     Route::get('/maintenance', [DashboardController::class, 'maintenance'])->name('maintenance');
     Route::get('/insurance',   [DashboardController::class, 'insurance'])->name('insurance');
+    Route::get('/routes',      [DashboardController::class, 'routeMap'])->name('routes');
     Route::post('/insurance',  [DashboardController::class, 'storeInsurance'])->name('insurance.store');
     Route::get('/adminpanel',  [DashboardController::class, 'index'])->name('adminpanel');
 });

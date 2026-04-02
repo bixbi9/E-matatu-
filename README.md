@@ -1,77 +1,86 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# e-Matatu Fleet Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+`e-Matatu` is a Laravel-based fleet management platform for matatu operations. It helps transport teams manage vehicles, drivers, route assignments, inspections, maintenance visibility, insurance records, and user accounts through a unified dashboard.
 
-## About Laravel
+## Highlights
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- multi-page operations dashboard
+- matatu-to-route assignment workflows
+- crew and driver assignment management
+- inspection reporting and filtering
+- insurance policy tracking
+- maintenance visibility
+- styled profile management
+- Supabase-backed fleet data integration
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Main Modules
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Dashboard
+- fleet counts and status summaries
+- recent inspections
+- recent crew records
+- route assignment visibility
 
-## Learning Laravel
+### Matatus
+- view vehicles
+- assign routes to matatus
+- link drivers to vehicles
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Crew
+- view driver records
+- assign drivers to routes
+- connect drivers to vehicles
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Inspections
+- browse inspection reports
+- filter by vehicle and result
+- review pass/fail outcomes
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Insurance
+- view policy records
+- add new insurance policies
+- monitor upcoming expiries
 
-## Laravel Sponsors
+### Profile
+- update account information
+- change password
+- delete account
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Tech Stack
 
-### Premium Partners
+- Laravel 11
+- PHP 8.2
+- Blade + Tailwind CSS
+- Alpine.js
+- Vite
+- Laravel Fortify / Jetstream / Sanctum
+- Supabase Postgres for fleet domain data
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Data Setup
 
-## Contributing
+The project currently uses:
+- local Laravel auth/app data
+- Supabase for fleet tables such as `drivers`, `vehicles`, `routes`, `inspections`, `insurance`, and `maintenance`
+- Redis for optional fleet snapshots after migrations/seeding
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Synthetic fleet demo data has also been added to support dashboard visibility during development and demos.
 
-## Code of Conduct
+## Redis Snapshot Workflow
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Laravel still runs migrations against SQL databases, not Redis. This repo now includes a Redis snapshot flow so you can mirror fleet records and migration metadata into a dedicated Redis database after the Supabase migration step.
 
-## Security Vulnerabilities
+1. Fill in the `REDIS_*` or `REDIS_FLEET_*` values in `.env`.
+2. Run `php artisan supabase:migrate --seed --redis`.
+3. If you need to replace an earlier Redis snapshot, add `--flush-redis`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+You can also sync Redis separately with `php artisan redis:sync-fleet --flush`.
 
-## License
+## Project Purpose
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is built to support real fleet operations workflows for matatu management, not just serve as a generic Laravel starter. It focuses on making transport data easier to view, assign, and maintain in one place.
 
-## Supabase Setup
+## Documentation
 
-This project now supports syncing Laravel auth with Supabase Auth and running the Laravel migrations against a Supabase Postgres database.
+For the full technical guide, architecture notes, setup details, and key file references, see:
 
-1. Fill in the `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` values in `.env`.
-2. Fill in either `SUPABASE_DB_URL` or the `SUPABASE_DB_HOST`, `SUPABASE_DB_PORT`, `SUPABASE_DB_DATABASE`, `SUPABASE_DB_USERNAME`, and `SUPABASE_DB_PASSWORD` values.
-3. Run `php artisan migrate` for the local database as usual.
-4. Run `php artisan supabase:migrate` to apply the same Laravel migrations to Supabase Postgres.
-
-When the Supabase auth variables are configured, new registrations are created in both Laravel and Supabase Auth, and successful logins store the Supabase session tokens in the Laravel session. Profile email changes and password updates also sync back to Supabase for users that already have a `supabase_user_id`.
+- [Developer Guide](docs/DEVELOPER_GUIDE.md)

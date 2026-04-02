@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inspector extends Model
 {
+    protected $connection = 'supabase';
+
     protected $table = 'inspectors';
 
     protected $fillable = [

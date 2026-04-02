@@ -184,6 +184,20 @@ return [
             'database' => env('REDIS_CACHE_DB', '1'),
         ],
 
+        'fleet' => [
+            'url' => env('REDIS_FLEET_URL', env('REDIS_URL')),
+            'host' => env('REDIS_FLEET_HOST', env('REDIS_HOST', '127.0.0.1')),
+            'username' => env('REDIS_FLEET_USERNAME', env('REDIS_USERNAME')),
+            'password' => env('REDIS_FLEET_PASSWORD', env('REDIS_PASSWORD')),
+            'port' => env('REDIS_FLEET_PORT', env('REDIS_PORT', '6379')),
+            'database' => env('REDIS_FLEET_DB', '2'),
+        ],
+
+    ],
+
+    'redis_sync' => [
+        'connection' => env('REDIS_FLEET_CONNECTION', 'fleet'),
+        'prefix' => env('REDIS_FLEET_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_fleet'),
     ],
 
 ];

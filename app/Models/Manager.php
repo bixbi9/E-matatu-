@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Manager extends Model
 {
+    protected $connection = 'supabase';
+
     protected $table = 'managers';
 
     protected $fillable = [
