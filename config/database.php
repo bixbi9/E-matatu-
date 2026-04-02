@@ -20,7 +20,8 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    // If SUPABASE_DB_URL is present (Vercel production), default to supabase.
+    'default' => env('DB_CONNECTION', env('SUPABASE_DB_URL') ? 'supabase' : 'sqlite'),
 
     /*
     |--------------------------------------------------------------------------
