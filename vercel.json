@@ -1,6 +1,7 @@
 {
   "version": 2,
   "framework": null,
+  "alias": ["e-matutu-system.vercel.app"],
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "functions": {
@@ -12,6 +13,14 @@
     {
       "src": "/build/(.*)",
       "dest": "/build/$1"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/js/$1"
     },
     {
       "src": "/(favicon\\.ico|robots\\.txt)",
