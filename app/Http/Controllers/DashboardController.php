@@ -334,7 +334,11 @@ class DashboardController extends Controller
         }
 
         if ($this->routePersistenceReady()) {
-            $this->syncRouteCatalog();
+            try {
+                $this->syncRouteCatalog();
+            } catch (\Throwable) {
+                // Catalog sync failed; continue with existing route data.
+            }
 
             return FleetRoute::whereNotNull('route_code')
                 ->orderBy('route_code')
@@ -363,15 +367,29 @@ class DashboardController extends Controller
 
     private function syncRouteCatalog(): void
     {
-        foreach (config('digital_matatus.routes', []) as $route) {
+        $routes = config('digital_matatus.routes', []);
+        if (empty($routes)) {
+            return;
+        }
+
+        $codes = array_column($routes, 'code');
+        $existingCount = FleetRoute::whereIn('route_code', $codes)->count();
+
+        if ($existingCount >= count($routes)) {
+            return; // Catalog already synced — skip 22 upserts.
+        }
+
+        $sourceLabel = config('digital_matatus.source_label');
+
+        foreach ($routes as $route) {
             FleetRoute::updateOrCreate(
                 ['route_code' => $route['code']],
                 [
-                    'route_name' => $route['destination'],
+                    'route_name'     => $route['destination'],
                     'start_location' => 'Nairobi CBD',
-                    'end_location' => $route['destination'],
-                    'status' => 'Active',
-                    'source_label' => config('digital_matatus.source_label'),
+                    'end_location'   => $route['destination'],
+                    'status'         => 'Active',
+                    'source_label'   => $sourceLabel,
                 ]
             );
         }
