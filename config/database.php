@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Str;
 
-$supabaseProjectHost = parse_url((string) env('SUPABASE_URL', ''), PHP_URL_HOST);
+$supabaseProjectHost = parse_url((string) trim((string) env('SUPABASE_URL', '')), PHP_URL_HOST);
 $supabaseProjectRef = $supabaseProjectHost ? Str::before($supabaseProjectHost, '.') : null;
 $derivedSupabaseDbHost = $supabaseProjectRef ? 'db.'.$supabaseProjectRef.'.supabase.co' : '127.0.0.1';
 
@@ -21,7 +21,7 @@ return [
     */
 
     // If SUPABASE_DB_URL is present (Vercel production), default to supabase.
-    'default' => env('DB_CONNECTION', env('SUPABASE_DB_URL') ? 'supabase' : 'sqlite'),
+    'default' => trim((string) env('DB_CONNECTION', env('SUPABASE_DB_URL') ? 'supabase' : 'sqlite')),
 
     /*
     |--------------------------------------------------------------------------
@@ -101,17 +101,17 @@ return [
 
         'supabase' => [
             'driver' => 'pgsql',
-            'url' => env('SUPABASE_DB_URL'),
-            'host' => env('SUPABASE_DB_HOST') ?: $derivedSupabaseDbHost,
-            'port' => env('SUPABASE_DB_PORT', '5432'),
-            'database' => env('SUPABASE_DB_DATABASE', 'postgres'),
-            'username' => env('SUPABASE_DB_USERNAME', 'postgres'),
+            'url' => trim((string) env('SUPABASE_DB_URL', '')),
+            'host' => trim((string) (env('SUPABASE_DB_HOST') ?: $derivedSupabaseDbHost)),
+            'port' => trim((string) env('SUPABASE_DB_PORT', '5432')),
+            'database' => trim((string) env('SUPABASE_DB_DATABASE', 'postgres')),
+            'username' => trim((string) env('SUPABASE_DB_USERNAME', 'postgres')),
             'password' => env('SUPABASE_DB_PASSWORD', ''),
             'charset' => env('SUPABASE_DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => env('SUPABASE_DB_SCHEMA', 'public'),
-            'sslmode' => env('SUPABASE_DB_SSLMODE', 'require'),
+            'search_path' => trim((string) env('SUPABASE_DB_SCHEMA', 'public')),
+            'sslmode' => trim((string) env('SUPABASE_DB_SSLMODE', 'require')),
         ],
 
         'sqlsrv' => [
