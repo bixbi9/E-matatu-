@@ -63,20 +63,6 @@ The project currently uses:
 - Supabase for fleet tables such as `drivers`, `vehicles`, `routes`, `inspections`, `insurance`, and `maintenance`
 - Redis for optional fleet snapshots after migrations/seeding
 
-Synthetic fleet demo data has also been added to support dashboard visibility during development and demos.
-
-## Redis Snapshot Workflow
-
-Laravel still runs migrations against SQL databases, not Redis. This repo now includes a Redis snapshot flow so you can mirror fleet records and migration metadata into a dedicated Redis database after the Supabase migration step.
-
-1. Fill in the `REDIS_*` or `REDIS_FLEET_*` values in `.env`.
-2. Run `php artisan supabase:migrate --seed --redis`.
-3. If you need to replace an earlier Redis snapshot, add `--flush-redis`.
-
-You can also sync Redis separately with `php artisan redis:sync-fleet --flush`.
-
-## Project Purpose
-
 This project is built to support real fleet operations workflows for matatu management, not just serve as a generic Laravel starter. It focuses on making transport data easier to view, assign, and maintain in one place.
 
 ## Documentation
